@@ -27,20 +27,10 @@ function clearStopwatchInterval() {
 
 function showStopwatch(selector) {
     let current = document.querySelector(selector);
+    let minutesString = minutes.toString().padStart(2, '0');
+    let secondsString = seconds.toString().padStart(2, '0');
 
-    if (minutes >= 0 && minutes <= 9) {
-        if (seconds >= 0 && seconds <= 9) {
-            current.innerHTML = `<span class="app__minutes stopwatch">0${minutes}</span>:<span class="app__seconds stopwatch">0${seconds}</span>`;
-        } else if (seconds >= 10 && seconds <= 59) {
-            current.innerHTML = `<span class="app__minutes stopwatch">0${minutes}</span>:<span class="app__seconds stopwatch">${seconds}</span>`;
-        }
-    } else if (minutes >= 10 && minutes <= 59) {
-        if (seconds >= 0 && seconds <= 9) {
-            current.innerHTML = `<span class="app__minutes stopwatch">${minutes}</span>:<span class="app__seconds stopwatch">0${seconds}</span>`;
-        } else if (seconds >= 10 && seconds <= 59) {
-            current.innerHTML = `<span class="app__minutes stopwatch">${minutes}</span>:<span class="app__seconds stopwatch">${seconds}</span>`;
-        }
-    }
+    current.innerHTML = `<span class="app__minutes stopwatch">${minutesString}</span>:<span class="app__seconds stopwatch">${secondsString}</span>`;
 }
 
 function getStopwatchData(selector) {
@@ -92,19 +82,13 @@ function resetStopwatch(selector, list, item, classActive) {
 function checkListLength(selector) {
     const list = document.querySelector(selector);
 
-    if (list.children.length === 0) {
-        list.innerHTML = `<li>The history is empty</li>`;
-    }
+    if (list.children.length === 0) list.innerHTML = `<li>The history is empty</li>`;
 }
 
-function showElements(selector, activeClass) {
+function toggleClassElement(selector, activeClass) {
     const element = document.querySelector(selector);
 
-    if (!element.classList.contains(activeClass)) {
-        element.classList.add(activeClass);
-    } else {
-        element.classList.remove(activeClass);
-    }
+    !element.classList.contains(activeClass) ? element.classList.add(activeClass) : element.classList.remove(activeClass);
 }
 
 function changeColor(selector) {
@@ -115,7 +99,7 @@ function changeColor(selector) {
 document.addEventListener('click', e => {
     const target = e.target;
     if (target.classList.contains('app__palette') || target.classList.contains('fa-palette')) {
-        showElements('.app__color', 'show-color');
+        toggleClassElement('.app__color', 'show-color');
     }
 
     if (target.classList.contains('app__start') || target.classList.contains('fa-play')) {
@@ -139,11 +123,11 @@ document.addEventListener('click', e => {
 
     if (target.classList.contains('app__history')) {
         checkListLength('.app__list');
-        showElements('.app__list', 'show-list');
+        toggleClassElement('.app__list', 'show-list');
     }
 
     if (target.classList.contains('fa-question-circle') || target.classList.contains('popup') || target.classList.contains('popup__close')) {
-        showElements('.popup', 'show-popup');
+        toggleClassElement('.popup', 'show-popup');
     }
 });
 
