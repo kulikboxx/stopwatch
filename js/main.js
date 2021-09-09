@@ -6,7 +6,7 @@ let timerId,
     history = [];
 
 function startStopwatch(interval, selector) {
-    clearStopwatchInterval(selector);
+    clearInterval(timerId);
 
     timerId = setInterval(() => {
         seconds++;
@@ -19,10 +19,6 @@ function startStopwatch(interval, selector) {
         }
         showStopwatch(selector);
     }, interval);
-}
-
-function clearStopwatchInterval() {
-    clearInterval(timerId);
 }
 
 function showStopwatch(selector) {
@@ -81,14 +77,12 @@ function resetStopwatch(selector, list, item, classActive) {
 
 function checkListLength(selector) {
     const list = document.querySelector(selector);
-
-    if (list.children.length === 0) list.innerHTML = `<li>The history is empty</li>`;
+    list.children.length === 0 ? list.innerHTML = `<li>The history is empty</li>` : false;
 }
 
 function toggleClassElement(selector, activeClass) {
     const element = document.querySelector(selector);
-
-    !element.classList.contains(activeClass) ? element.classList.add(activeClass) : element.classList.remove(activeClass);
+    element.classList.contains(activeClass) ? element.classList.remove(activeClass) : element.classList.add(activeClass);
 }
 
 function changeColor(selector) {
@@ -96,39 +90,26 @@ function changeColor(selector) {
     document.documentElement.style.setProperty('--main-color', input.value);
 }
 
-document.addEventListener('click', e => {
-    const target = e.target;
-    if (target.classList.contains('app__palette') || target.classList.contains('fa-palette')) {
-        toggleClassElement('.app__color', 'show-color');
-    }
-
-    if (target.classList.contains('app__start') || target.classList.contains('fa-play')) {
-        startStopwatch(1000, '.app__current');
-    }
-
-    if (target.classList.contains('app__pause') || target.classList.contains('fa-pause')) {
-        clearStopwatchInterval();
-    }
-
-    if (target.classList.contains('app__stop') || target.classList.contains('fa-stop')) {
-        getStopwatchData('.app__current .stopwatch');
-        clearStopwatchInterval();
-        stopStopwatch('.app__minutes, .app__seconds');
-    }
-
-    if (target.classList.contains('app__reset') || target.classList.contains('fa-times')) {
-        clearStopwatchInterval();
-        resetStopwatch('.stopwatch', '.app__list', '.app__list li', 'show-list');
-    }
-
-    if (target.classList.contains('app__history')) {
-        checkListLength('.app__list');
-        toggleClassElement('.app__list', 'show-list');
-    }
-
-    if (target.classList.contains('fa-question-circle') || target.classList.contains('popup') || target.classList.contains('popup__close')) {
+document.querySelector('.app__input').addEventListener('input', () => changeColor('.app__input'));
+document.querySelector('.fa-palette').addEventListener('click', () => toggleClassElement('.app__color', 'show-color'));
+document.querySelector('.fa-question-circle').addEventListener('click', () => toggleClassElement('.popup', 'show-popup'));
+document.querySelector('.fa-play').addEventListener('click', () => startStopwatch(1000, '.app__current'));
+document.querySelector('.fa-pause').addEventListener('click', () => clearInterval(timerId));
+document.querySelector('.fa-stop').addEventListener('click', () => {
+    getStopwatchData('.app__current .stopwatch');
+    stopStopwatch('.app__minutes, .app__seconds');
+    clearInterval(timerId);
+});
+document.querySelector('.fa-times').addEventListener('click', () => {
+    resetStopwatch('.stopwatch', '.app__list', '.app__list li', 'show-list');
+    clearInterval(timerId);
+});
+document.querySelector('.app__history').addEventListener('click', () => {
+    checkListLength('.app__list');
+    toggleClassElement('.app__list', 'show-list');
+});
+document.querySelector('.popup').addEventListener('click', e => {
+    if (e.target.classList.contains('popup') || e.target.classList.contains('popup__close')) {
         toggleClassElement('.popup', 'show-popup');
     }
 });
-
-document.addEventListener('input', () => changeColor('.app__input'));
